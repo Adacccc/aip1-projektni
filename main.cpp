@@ -54,6 +54,73 @@ void ispis(int polje[8][8])
     }
 }
 
+int jeLegalno(int polje[8][8], int i, int j)
+{
+    if (polje[i][j] != 0)
+    {
+        return 0;
+    }
+    int zauzeto = 0, limit = 8;
+    if (polje[i + 1][j])
+    {
+        zauzeto++;
+    }
+    if (polje[i - 1][j])
+    {
+        zauzeto++;
+    }
+    if (polje[i][j + 1])
+    {
+        zauzeto++;
+    }
+    if (polje[i][j - 1])
+    {
+        zauzeto++;
+    }
+    if (polje[i + 1][j + 1])
+    {
+        zauzeto++;
+    }
+    if (polje[i + 1][j - 1])
+    {
+        zauzeto++;
+    }
+    if (polje[i - 1][j + 1])
+    {
+        zauzeto++;
+    }
+    if (polje[i - 1][j - 1])
+    {
+        zauzeto++;
+    }
+    if (i == 1 || i == 6)
+    {
+        if (j == 1 || j == 6)
+        {
+            limit = 3;
+        }
+        else
+        {
+            limit = 5;
+        }
+    }
+    else
+    {
+        if (j == 1 || j == 6)
+        {
+            limit = 5;
+        }
+    }
+    if (zauzeto < limit)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
 {
     int tocanUpis = 0, stupac, redak;
@@ -73,7 +140,7 @@ int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
                     redak = i + 1;
                 }
             }
-            if (stupac && redak && stupac <= 6 && stupac >= 1 && !polje[redak][stupac])
+            if (stupac && redak && stupac <= 6 && stupac >= 1 && jeLegalno(polje, redak, stupac))
             {
                 if (prevS && prevR)
                 {
@@ -83,7 +150,7 @@ int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
                     }
                     else
                     {
-                        printf("Netočan upis.\n");
+                        printf("Nije legalan potez.\n");
                     }
                 }
                 else
@@ -93,7 +160,7 @@ int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
             }
             else
             {
-                printf("Netočan upis.\n");
+                printf("Nije legalan potez.\n");
             }
         }
         else
@@ -124,62 +191,7 @@ void igra()
         {
             for (int j = 1; j < 7; j++)
             {
-                if (polje[i][j] != 0)
-                {
-                    continue;
-                }
-                int zauzeto = 0, limit = 8;
-                if (polje[i + 1][j])
-                {
-                    zauzeto++;
-                }
-                if (polje[i - 1][j])
-                {
-                    zauzeto++;
-                }
-                if (polje[i][j + 1])
-                {
-                    zauzeto++;
-                }
-                if (polje[i][j - 1])
-                {
-                    zauzeto++;
-                }
-                if (polje[i + 1][j + 1])
-                {
-                    zauzeto++;
-                }
-                if (polje[i + 1][j - 1])
-                {
-                    zauzeto++;
-                }
-                if (polje[i - 1][j + 1])
-                {
-                    zauzeto++;
-                }
-                if (polje[i - 1][j - 1])
-                {
-                    zauzeto++;
-                }
-                if (i == 1 || i == 6)
-                {
-                    if (j == 1 || j == 6)
-                    {
-                        limit = 3;
-                    }
-                    else
-                    {
-                        limit = 5;
-                    }
-                }
-                else
-                {
-                    if (j == 1 || j == 6)
-                    {
-                        limit = 5;
-                    }
-                }
-                if (zauzeto < limit)
+                if (jeLegalno(polje, i, j))
                 {
                     legalniPotezi++;
                 }
