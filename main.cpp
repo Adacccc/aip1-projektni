@@ -25,7 +25,7 @@ void ispis(int polje[8][8])
                 switch (x)
                 {
                 case ID_TOCKA1:
-                    printf("%sX%s", BOJA1, DEF_BOJA);
+                    printf("%s●%s", BOJA1, DEF_BOJA);
                     break;
                 case ID_SIJENA1:
                     printf("%s|%s", BOJA1, DEF_BOJA);
@@ -34,10 +34,10 @@ void ispis(int polje[8][8])
                     printf("%s|%s", BOJA2, DEF_BOJA);
                     break;
                 case ID_TOCKA2:
-                    printf("%sY%s", BOJA2, DEF_BOJA);
+                    printf("%s●%s", BOJA2, DEF_BOJA);
                     break;
                 default:
-                    printf("%sO", DEF_BOJA);
+                    printf("%s○", DEF_BOJA);
                 }
             }
             else if (i == 0 && j % 2 == 0 && j > 0)
@@ -133,7 +133,6 @@ int jeLegalno(int polje[8][8], int i, int j, int prevR, int prevS)
             return 0;
         }
     }
-    
 }
 
 int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
@@ -180,10 +179,73 @@ int upisPolja(int polje[8][8], const char kontekst[31], int prevR, int prevS)
     return redak * 10 + stupac;
 }
 
+int zbrojiBodove(int polje[8][8], int provjera)
+{
+    int max = 0, posijeceno[8][8] = {0};
+    for (int i = 1; i < 7; i++)
+    {
+        for (int j = 1; j < 7; j++)
+        {
+            if (polje[i][j] == provjera)
+            {
+                int slijedeceX[64] = {};
+                int slijedeceY[64] = {};
+                slijedeceX[0] = i;
+                slijedeceY[0] = j;
+                int brSlijedecih = 1;
+                int brPovezanih = 0;
+                while (brSlijedecih)
+                {
+                    int x = slijedeceX[brSlijedecih - 1], y = slijedeceY[brSlijedecih - 1];
+                    brSlijedecih--;
+                    if (posijeceno[x][y] || x < 0 || x > 7 || y < 0 || y > 7)
+                    {
+                        continue;
+                    }
+                    posijeceno[x][y] = 1;
+                    if (polje[x][y] == provjera)
+                    {
+                        brPovezanih++;
+                        slijedeceX[brSlijedecih] = x + 1;
+                        slijedeceY[brSlijedecih] = y;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x - 1;
+                        slijedeceY[brSlijedecih] = y;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x;
+                        slijedeceY[brSlijedecih] = y + 1;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x;
+                        slijedeceY[brSlijedecih] = y - 1;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x + 1;
+                        slijedeceY[brSlijedecih] = y + 1;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x - 1;
+                        slijedeceY[brSlijedecih] = y + 1;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x + 1;
+                        slijedeceY[brSlijedecih] = y - 1;
+                        brSlijedecih++;
+                        slijedeceX[brSlijedecih] = x - 1;
+                        slijedeceY[brSlijedecih] = y - 1;
+                        brSlijedecih++;
+                    }
+                }
+                if (brPovezanih > max)
+                {
+                    max = brPovezanih;
+                }
+            }
+        }
+    }
+    return max;
+}
+
 void igra()
 {
     int polje[8][8] = {0};
-    int potez = 1, predaja = 0;
+    int potez = 1, predaja = 0, bodovi1 = 0, bodovi2 = 0;
 
     while (1)
     {
@@ -232,7 +294,6 @@ void igra()
         else
         {
             predaja = potez;
-            break;
         }
 
         ispis(polje);
@@ -256,6 +317,15 @@ void igra()
         else
         {
             predaja = potez;
+        }
+
+        bodovi1 = zbrojiBodove(polje, ID_TOCKA1);
+        bodovi2 = zbrojiBodove(polje, ID_TOCKA2);
+
+        printf("X: %s%d%s\nY: %s%d%s\n\n", BOJA1, bodovi1, DEF_BOJA, BOJA2, bodovi2, DEF_BOJA);
+
+        if (predaja)
+        {
             break;
         }
 
@@ -269,220 +339,9 @@ void igra()
         }
     }
 
-    int veze1[8][8] = {0}, veze2[8][8] = {0}, bodovi1 = 0, bodovi2 = 0, t1 = 0, r1 = 1, t2 = 0, r2 = 1;
-    for (int i = 1; i < 7; i++)
-    {
-        for (int j = 1; j < 7; j++)
-        {
-            if (polje[i][j] == ID_TOCKA1)
-            {
-                int tPrije = t1;
-                if (polje[i + 1][j] == ID_TOCKA1 && veze1[i + 1][j] == 0)
-                {
-                    veze1[i + 1][j] = r1;
-                    t1++;
-                }
-                if (polje[i - 1][j] == ID_TOCKA1 && veze1[i - 1][j] == 0)
-                {
-                    veze1[i - 1][j] = r1;
-                    t1++;
-                }
-                if (polje[i][j + 1] == ID_TOCKA1 && veze1[i][j + 1] == 0)
-                {
-                    veze1[i][j + 1] = r1;
-                    t1++;
-                }
-                if (polje[i][j - 1] == ID_TOCKA1 && veze1[i][j - 1] == 0)
-                {
-                    veze1[i][j - 1] = r1;
-                    t1++;
-                }
-                if (polje[i + 1][j + 1] == ID_TOCKA1 && veze1[i + 1][j + 1] == 0)
-                {
-                    veze1[i + 1][j + 1] = r1;
-                    t1++;
-                }
-                if (polje[i + 1][j - 1] == ID_TOCKA1 && veze1[i + 1][j - 1] == 0)
-                {
-                    veze1[i + 1][j - 1] = r1;
-                    t1++;
-                }
-                if (polje[i - 1][j + 1] == ID_TOCKA1 && veze1[i - 1][j + 1] == 0)
-                {
-                    veze1[i - 1][j + 1] = r1;
-                    t1++;
-                }
-                if (polje[i - 1][j - 1] == ID_TOCKA1 && veze1[i - 1][j - 1] == 0)
-                {
-                    veze1[i - 1][j - 1] = r1;
-                    t1++;
-                }
-                if (t1 == tPrije)
-                {
-                    t1 = 0;
-                    r1++;
-                }
-            }
-            else if (polje[i][j] == ID_TOCKA2)
-            {
-                int tPrije = t2;
-                if (polje[i + 1][j] == ID_TOCKA2 && veze2[i + 1][j] == 0)
-                {
-                    veze2[i + 1][j] = r2;
-                    t2++;
-                }
-                if (polje[i - 1][j] == ID_TOCKA2 && veze2[i - 1][j] == 0)
-                {
-                    veze2[i - 1][j] = r2;
-                    t2++;
-                }
-                if (polje[i][j + 1] == ID_TOCKA2 && veze2[i][j + 1] == 0)
-                {
-                    veze2[i][j + 1] = r2;
-                    t2++;
-                }
-                if (polje[i][j - 1] == ID_TOCKA2 && veze2[i][j - 1] == 0)
-                {
-                    veze2[i][j - 1] = r2;
-                    t2++;
-                }
-                if (polje[i + 1][j + 1] == ID_TOCKA2 && veze2[i + 1][j + 1] == 0)
-                {
-                    veze2[i + 1][j + 1] = r2;
-                    t2++;
-                }
-                if (polje[i + 1][j - 1] == ID_TOCKA2 && veze2[i + 1][j - 1] == 0)
-                {
-                    veze2[i + 1][j - 1] = r2;
-                    t2++;
-                }
-                if (polje[i - 1][j + 1] == ID_TOCKA2 && veze2[i - 1][j + 1] == 0)
-                {
-                    veze2[i - 1][j + 1] = r2;
-                    t2++;
-                }
-                if (polje[i - 1][j - 1] == ID_TOCKA2 && veze2[i - 1][j - 1] == 0)
-                {
-                    veze2[i - 1][j - 1] = r2;
-                    t2++;
-                }
-                if (t2 == tPrije)
-                {
-                    t2 = 0;
-                    r2++;
-                }
-            }
-        }
-    }
-    for (int x = 1; x <= 2; x++)
-    {
-        for (int i = 1; i < 7; i++)
-        {
-            for (int j = 1; j < 7; j++)
-            {
-                if (polje[i][j] == ID_TOCKA1)
-                {
-                    if (polje[i + 1][j] == ID_TOCKA1 && veze1[i + 1][j] != veze1[i][j])
-                    {
-                        veze1[i + 1][j] = veze1[i][j];
-                    }
-                    if (polje[i - 1][j] == ID_TOCKA1 && veze1[i - 1][j] != veze1[i][j])
-                    {
-                        veze1[i - 1][j] = veze1[i][j];
-                    }
-                    if (polje[i][j + 1] == ID_TOCKA1 && veze1[i][j + 1] != veze1[i][j])
-                    {
-                        veze1[i][j + 1] = veze1[i][j];
-                    }
-                    if (polje[i][j - 1] == ID_TOCKA1 && veze1[i][j - 1] != veze1[i][j])
-                    {
-                        veze1[i][j - 1] = veze1[i][j];
-                    }
-                    if (polje[i + 1][j + 1] == ID_TOCKA1 && veze1[i + 1][j + 1] != veze1[i][j])
-                    {
-                        veze1[i + 1][j + 1] = veze1[i][j];
-                    }
-                    if (polje[i + 1][j - 1] == ID_TOCKA1 && veze1[i + 1][j - 1] != veze1[i][j])
-                    {
-                        veze1[i + 1][j - 1] = veze1[i][j];
-                    }
-                    if (polje[i - 1][j + 1] == ID_TOCKA1 && veze1[i - 1][j + 1] != veze1[i][j])
-                    {
-                        veze1[i - 1][j + 1] = veze1[i][j];
-                    }
-                    if (polje[i - 1][j - 1] == ID_TOCKA1 && veze1[i - 1][j - 1] != veze1[i][j])
-                    {
-                        veze1[i - 1][j - 1] = veze1[i][j];
-                    }
-                }
-                else if (polje[i][j] == ID_TOCKA2)
-                {
-                    if (polje[i + 1][j] == ID_TOCKA2 && veze2[i + 1][j] != veze2[i][j])
-                    {
-                        veze2[i + 1][j] = veze2[i][j];
-                    }
-                    if (polje[i - 1][j] == ID_TOCKA2 && veze2[i - 1][j] != veze2[i][j])
-                    {
-                        veze2[i - 1][j] = veze2[i][j];
-                    }
-                    if (polje[i][j + 1] == ID_TOCKA2 && veze2[i][j + 1] != veze2[i][j])
-                    {
-                        veze2[i][j + 1] = veze2[i][j];
-                    }
-                    if (polje[i][j - 1] == ID_TOCKA2 && veze2[i][j - 1] != veze2[i][j])
-                    {
-                        veze2[i][j - 1] = veze2[i][j];
-                    }
-                    if (polje[i + 1][j + 1] == ID_TOCKA2 && veze2[i + 1][j + 1] != veze2[i][j])
-                    {
-                        veze2[i + 1][j + 1] = veze2[i][j];
-                    }
-                    if (polje[i + 1][j - 1] == ID_TOCKA2 && veze2[i + 1][j - 1] != veze2[i][j])
-                    {
-                        veze2[i + 1][j - 1] = veze2[i][j];
-                    }
-                    if (polje[i - 1][j + 1] == ID_TOCKA2 && veze2[i - 1][j + 1] != veze2[i][j])
-                    {
-                        veze2[i - 1][j + 1] = veze2[i][j];
-                    }
-                    if (polje[i - 1][j - 1] == ID_TOCKA2 && veze2[i - 1][j - 1] != veze2[i][j])
-                    {
-                        veze2[i - 1][j - 1] = veze2[i][j];
-                    }
-                }
-            }
-        }
-    }
-    for (int r = 1; r <= fmax(r1, r2); r++)
-    {
-        t1 = 0;
-        t2 = 0;
-        for (int i = 1; i < 7; i++)
-        {
-            for (int j = 1; j < 7; j++)
-            {
-                if (veze1[i][j] == r)
-                {
-                    t1++;
-                }
-                else if (veze2[i][j] == r)
-                {
-                    t2++;
-                }
-            }
-        }
-        if (t1 > bodovi1)
-        {
-            bodovi1 = t1;
-        }
-        if (t2 > bodovi2)
-        {
-            bodovi2 = t2;
-        }
-    }
     if (!predaja)
     {
-        printf("X: %s%d%s\nY: %s%d%s\n\n", BOJA1, bodovi1, DEF_BOJA, BOJA2, bodovi2, DEF_BOJA);
+        ispis(polje);
         if (bodovi1 > bodovi2)
         {
             printf("Pobjednik/ca: %sIgrač 1%s\n", BOJA1, DEF_BOJA);
