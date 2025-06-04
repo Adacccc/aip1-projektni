@@ -242,7 +242,7 @@ int zbrojiBodove(int polje[8][8], int provjera)
     return max;
 }
 
-void igra()
+void igra(char ime1[69], char ime2[69])
 {
     int polje[8][8] = {0};
     int potez = 1, predaja = 0, bodovi1 = 0, bodovi2 = 0;
@@ -269,11 +269,11 @@ void igra()
         ispis(polje);
         if (potez == 1)
         {
-            printf("\nNa potezu: %sIgrač 1%s\n\n", BOJA1, DEF_BOJA);
+            printf("\nNa potezu: %s%s%s\n\n", BOJA1, ime1, DEF_BOJA);
         }
         else
         {
-            printf("\nNa potezu: %sIgrač 2%s\n\n", BOJA2, DEF_BOJA);
+            printf("\nNa potezu: %s%s%s\n\n", BOJA2, ime2, DEF_BOJA);
         }
 
         int br = upisPolja(polje, "Upišite polje (postavljanje točkice): ", 0, 0);
@@ -322,7 +322,7 @@ void igra()
         bodovi1 = zbrojiBodove(polje, ID_TOCKA1);
         bodovi2 = zbrojiBodove(polje, ID_TOCKA2);
 
-        printf("X: %s%d%s\nY: %s%d%s\n\n", BOJA1, bodovi1, DEF_BOJA, BOJA2, bodovi2, DEF_BOJA);
+        printf("%s: %s%d%s\n%s: %s%d%s\n\n", ime1, BOJA1, bodovi1, DEF_BOJA, ime2, BOJA2, bodovi2, DEF_BOJA);
 
         if (predaja)
         {
@@ -344,11 +344,11 @@ void igra()
         ispis(polje);
         if (bodovi1 > bodovi2)
         {
-            printf("Pobjednik/ca: %sIgrač 1%s\n", BOJA1, DEF_BOJA);
+            printf("Pobjednik/ca: %s%s%s\n", BOJA1, ime1, DEF_BOJA);
         }
         else if (bodovi2 > bodovi1)
         {
-            printf("Pobjednik/ca: %sIgrač 2%s\n", BOJA2, DEF_BOJA);
+            printf("Pobjednik/ca: %s%s%s\n", BOJA2, ime2, DEF_BOJA);
         }
         else
         {
@@ -359,11 +359,11 @@ void igra()
     {
         if (predaja == 2)
         {
-            printf("Pobjednik/ca: %sIgrač 1%s\n", BOJA1, DEF_BOJA);
+            printf("Pobjednik/ca: %s%s%s\n", BOJA1, ime1, DEF_BOJA);
         }
         else
         {
-            printf("Pobjednik/ca: %sIgrač 2%s\n", BOJA2, DEF_BOJA);
+            printf("Pobjednik/ca: %s%s%s\n", BOJA2, ime2, DEF_BOJA);
         }
     }
 }
@@ -371,21 +371,22 @@ void igra()
 int main()
 {
     int lastCmd;
+    char ime1[69] = "Igrač 1", ime2[69] = "Igrač 2";
     printf("Projektni rad - \"Točke i sijene\"\n");
     printf("Škola: Srednja Strukovna Škola, Samobor, Andrije Hebrenga 26\n");
     printf("Školska godina: 2024./2025.\n");
-    printf("Radio: Adrian Horvat\n");
+    printf("Autor: Adrian Horvat\n");
     printf("Razred: 1.G\n");
     while (1)
     {
         printf("\n");
-        printf("Unesite radnju:\n0 - Izađi iz programa\n1 - Nova igra\n2 - Upute\n");
+        printf("Unesite radnju:\n0 - Izađi iz programa\n1 - Nova igra\n2 - Upute\n3 - Postavke\n");
         scanf("%d", &lastCmd);
         printf("\n");
         if (lastCmd == 1)
         {
             printf("Nova igra:\n\n");
-            igra();
+            igra(ime1, ime2);
             printf("\n");
         }
         else if (lastCmd == 2)
@@ -402,6 +403,34 @@ int main()
             printf("Vaše točkice se spajaju sa susjednim točkicama (koje su također vaše).\n");
             printf("Cilj igre je imati više spojenih točkica od vašeg protivnika.\n");
             printf("Ako se želite predati, dok ste na potezu upišite nulu.\n");
+        }
+        else if (lastCmd == 3)
+        {
+            printf("Postavke:\n\n");
+            printf("Ime 1. igrača: %s%s%s\n", BOJA1, ime1, DEF_BOJA);
+            printf("Ime 2. igrača: %s%s%s\n\n", BOJA2, ime2, DEF_BOJA);
+            printf("Naredbe:\n0 - Izlaz iz postavka\n1 - Promijeni ime 1. igrača\n2 - Promijeni ime 2. igrača\n\n");
+            int cmd = 3;
+            while (cmd != 0 && cmd != 1 && cmd != 2)
+            {
+                printf("Upišite naredbu: ");
+                scanf("%d", &cmd);
+            }
+            printf("\n");
+            if (cmd == 1)
+            {
+                printf("Promijena 1. imena: ");
+                getchar();
+                fgets(ime1, 68, stdin);
+                printf("\nIme 1. igrača: %s%s%s\n", BOJA1, ime1, DEF_BOJA);
+            }
+            else if (cmd == 2)
+            {
+                printf("Promijena 2. imena: ");
+                getchar();
+                fgets(ime2, 68, stdin);
+                printf("\nIme 2. igrača: %s%s%s\n", BOJA1, ime2, DEF_BOJA);
+            }
         }
         else if (lastCmd == 0)
         {
