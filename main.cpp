@@ -422,6 +422,13 @@ int main()
                 printf("Promijena 1. imena: ");
                 getchar();
                 fgets(ime1, 68, stdin);
+                for (int i = 0; i < strlen(ime1); i++)
+                {
+                    if (ime1[i] == '\n')
+                    {
+                        ime1[i] = '\0';
+                    }
+                }
                 printf("\nIme 1. igrača: %s%s%s\n", BOJA1, ime1, DEF_BOJA);
             }
             else if (cmd == 2)
@@ -429,7 +436,14 @@ int main()
                 printf("Promijena 2. imena: ");
                 getchar();
                 fgets(ime2, 68, stdin);
-                printf("\nIme 2. igrača: %s%s%s\n", BOJA1, ime2, DEF_BOJA);
+                for (int i = 0; i < strlen(ime2); i++)
+                {
+                    if (ime2[i] == '\n')
+                    {
+                        ime2[i] = '\0';
+                    }
+                }
+                printf("\nIme 2. igrača: %s%s%s\n", BOJA2, ime2, DEF_BOJA);
             }
         }
         else if (lastCmd == 0)
