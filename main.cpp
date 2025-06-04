@@ -372,7 +372,7 @@ int main()
 {
     int lastCmd;
     char ime1[69] = "Igrač 1", ime2[69] = "Igrač 2";
-    printf("Projektni rad - \"Točke i sijene\"\n");
+    printf("Projektni rad - \"Sakupljivač\"\n");
     printf("Škola: Srednja Strukovna Škola, Samobor, Andrije Hebrenga 26\n");
     printf("Školska godina: 2024./2025.\n");
     printf("Autor: Adrian Horvat\n");
